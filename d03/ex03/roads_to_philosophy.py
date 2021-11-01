@@ -7,38 +7,22 @@ from bs4 import BeautifulSoup
 
 step = 0
 all_pages = []
-dead_end = []
-
-
-def dead_end_maker():
-    response = get('https://en.wikipedia.org/wiki/Category:All_dead-end_pages')
-    all_dead_ends = BeautifulSoup(response.content, "html.parser").find(class_='mw-category-generated').findAll('a')
-    for link in all_dead_ends:
-        href = link.get('href')
-        if href.find(':') == -1:
-            dead_end.append(href.replace('/wiki/', ''))
 
 
 def check_page(pagename):
     if pagename in all_pages:
         print('It leads to an infinite loop !')
-        exit(1)
-    elif pagename in dead_end:
-        print('It leads to a dead end !')
-        exit(1)
+        exit(0)
     all_pages.append(pagename)
     if pagename == 'Philosophy':
         for road in all_pages:
             print(road)
-        print(f'{step} roads from { all_pages[0]} to philosophy !')
+        print(f'{step} roads from {all_pages[0]} to philosophy !')
         exit(0)
 
 
 def parse_soup(soup):
     block = soup.find(class_='mw-parser-output')
-    if not block:
-        print(f"Error: page {soup.title.text.replace(' - Wikipedia', '')} not found")
-        exit(1)
     p_tags = block.findAll('p')
     for p in p_tags:
         if p.find_parent() != block:
@@ -47,14 +31,18 @@ def parse_soup(soup):
         for link in links:
             href = link.get('href')
             if href.find('.ogg') == -1 and href.find('/wiki/') == 0 and href.find(':') == -1:
-                title = link.get('title')
-                soup_maker(title.replace('_', ' '))
+                soup_maker(link.get('title'))
+    print('It leads to a dead end !')
+    exit(0)
 
 
 def soup_maker(pagename):
     global step
     step += 1
     response = get('https://en.wikipedia.org/wiki/' + pagename)
+    if response.status_code != 200:
+        print('Error:', response.url, response.reason)
+        exit(1)
     soup = BeautifulSoup(response.content, "html.parser")
     check_page(soup.title.text.replace(' - Wikipedia', ''))
     parse_soup(soup)
@@ -65,7 +53,7 @@ if __name__ == '__main__':
         print('Error: Wrong numbers of arguments')
     else:
         try:
-            dead_end_maker()
-            soup_maker(pagename=argv[1])
+            soup_maker(argv[1])
         except Exception as exc:
             print(exc)
+    exit(1)
