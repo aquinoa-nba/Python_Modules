@@ -1,0 +1,28 @@
+* {
+    color: blue;
+}
+table {
+    margin-left: 45%;
+}
+p, li {
+font-size: 120%;
+}
+.nav li {
+    display: inline;
+}
+ul.nav a {
+    color: blue;
+    text-align: center;
+    border: 2px solid blue;
+    display: inline-block;
+    padding:10px;
+    margin-top:30px;
+    margin-bottom:30px;
+    width: 32%;
+    text-decoration: none;
+}
+ul.nav a:hover{
+    background-color: blue;
+    color: #f4f4f4;
+    border: 2px solid #f4f4f4;
+}

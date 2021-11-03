@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Default title{% endblock title %}</title>
+    {% load static %}
+    {% block style %}
+    <link type="text/css" rel="stylesheet" href="{% static 'ex01/css/style1.css' %}">
+    {% endblock style %}
+</head>
+<body>
+    {% include 'ex01/nav.html' %}
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>

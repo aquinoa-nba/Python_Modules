@@ -1,0 +1,308 @@
+{% extends 'ex01/base.html' %}
+{% load static %}
+{% block style %}
+<link type="text/css" rel="stylesheet" href="{% static 'ex01/css/style2.css' %}">
+{% endblock style %}
+
+{% block title %}
+Ex01: Template engine.
+{% endblock title %}
+
+{% block content %}
+<h1>Built-in template tags</h1>
+<hr>
+<h2><code class="docutils literal notranslate" style="font-size: 120%">block</code></h2>
+<p>Defines a block that can be overridden by child templates. See Template inheritance for more information.</p>
+<div class="section" id="s-for" style="font-size: 120%">
+<h2><code class="docutils literal notranslate">for</code></h2>
+<p>Loops over each item in an array, making the item available in a context
+variable. For example, to display a list of athletes provided in
+<code class="docutils literal notranslate">athlete_list</code>:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>&lt;ul&gt;
+{ % for athlete in athlete_list % }
+    &lt;li&gt;{ { athlete.name } }&lt;/li&gt;
+{ % endfor % }
+&lt;/ul&gt;
+</pre></div>
+</div>
+<p>You can loop over a list in reverse by using
+<code class="docutils literal notranslate">{ % for obj in list reversed % }</code>.</p>
+<p>If you need to loop over a list of lists, you can unpack the values
+in each sublist into individual variables. For example, if your context
+contains a list of (x,y) coordinates called <code class="docutils literal notranslate">points</code>, you could use the
+following to output the list of points:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % for x, y in points % }
+    There is a point at { { x } },{ { y } }
+{ % endfor % }
+</pre></div>
+</div>
+<p>This can also be useful if you need to access the items in a dictionary.
+For example, if your context contained a dictionary <code class="docutils literal notranslate">data</code>, the following
+would display the keys and values of the dictionary:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % for key, value in data.items % }
+    { { key } }: { { value } }
+{ % endfor % }
+</pre></div>
+</div>
+<p>Keep in mind that for the dot operator, dictionary key lookup takes precedence
+over method lookup. Therefore if the <code class="docutils literal notranslate">data</code> dictionary contains a key named
+<code class="docutils literal notranslate">'items'</code>, <code class="docutils literal notranslate">data.items</code> will return <code class="docutils literal notranslate">data['items']</code> instead of
+<code class="docutils literal notranslate">data.items()</code>. Avoid adding keys that are named like dictionary methods if
+you want to use those methods in a template (<code class="docutils literal notranslate">items</code>, <code class="docutils literal notranslate">values</code>, <code class="docutils literal notranslate">keys</code>,
+etc.). Read more about the lookup order of the dot operator in the
+documentation of template variables.</p>
+<p>The for loop sets a number of variables available within the loop:</p>
+<table class="docutils">
+<colgroup>
+<col width="36%">
+<col width="64%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Variable</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal notranslate">forloop.counter</code></td>
+<td>The current iteration of the loop (1-indexed)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate">forloop.counter0</code></td>
+<td>The current iteration of the loop (0-indexed)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate">forloop.revcounter</code></td>
+<td>The number of iterations from the end of the
+loop (1-indexed)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate">forloop.revcounter0</code></td>
+<td>The number of iterations from the end of the
+loop (0-indexed)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate">forloop.first</code></td>
+<td>True if this is the first time through the loop</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate">forloop.last</code></td>
+<td>True if this is the last time through the loop</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate">forloop.parentloop</code></td>
+<td>For nested loops, this is the loop surrounding
+the current one</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="section" id="s-if" style="font-size: 120%">
+<h2><code class="docutils literal notranslate">if</code></h2>
+<p>The <code class="docutils literal notranslate">{ % if % }</code> tag evaluates a variable, and if that variable is “true” (i.e.
+exists, is not empty, and is not a false boolean value) the contents of the
+block are output:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if athlete_list % }
+    Number of athletes: { { athlete_list|length } }
+{ % elif athlete_in_locker_room_list % }
+    Athletes should be out of the locker room soon!
+{ % else % }
+    No athletes.
+{ % endif % }
+</pre></div>
+</div>
+<p>In the above, if <code class="docutils literal notranslate">athlete_list</code> is not empty, the number of athletes will be
+displayed by the <code class="docutils literal notranslate">{ { athlete_list|length } }</code> variable.</p>
+<p>As you can see, the <code class="docutils literal notranslate">if</code> tag may take one or several <code class="docutils literal notranslate">{ % elif % }</code>
+clauses, as well as an <code class="docutils literal notranslate">{ % else % }</code> clause that will be displayed if all
+previous conditions fail. These clauses are optional.</p>
+<div class="section" id="s-boolean-operators">
+<h4>Boolean operators</h4>
+<p><code class="xref std std-ttag docutils literal notranslate">if</code> tags may use <code class="docutils literal notranslate">and</code>, <code class="docutils literal notranslate">or</code> or <code class="docutils literal notranslate">not</code> to test a number of
+variables or to negate a given variable:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if athlete_list and coach_list % }
+    Both athletes and coaches are available.
+{ % endif % }
+
+ { % if not athlete_list % }
+    There are no athletes.
+{ % endif % }
+
+{ % if athlete_list or coach_list % }
+    There are some athletes or some coaches.
+{ % endif % }
+
+{ % if not >athlete_list or >coach_list % }
+    There are no athletes or there are some coaches.
+{ % endif % }
+
+{ % if >athlete_list and not >coach_list % }
+    There are some athletes and absolutely no coaches.
+{ % endif % }
+</pre></div>
+</div>
+<p>Use of both <code class="docutils literal notranslate">and</code> and <code class="docutils literal notranslate">or</code> clauses within the same tag is allowed, with
+<code class="docutils literal notranslate">and</code> having higher precedence than <code class="docutils literal notranslate">or</code> e.g.:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >athlete_list and >coach_list or >cheerleader_list % }
+</pre></div>
+</div>
+<p>will be interpreted like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre>>if (athlete_list >and coach_list) >or cheerleader_list
+</pre></div>
+</div>
+<p>Use of actual parentheses in the <code class="xref std std-ttag docutils literal notranslate">if</code> tag is invalid syntax. If you need
+them to indicate precedence, you should use nested <code class="xref std std-ttag docutils literal notranslate">if</code> tags.</p>
+<p><code class="xref std std-ttag docutils literal notranslate">if</code> tags may also use the operators <code class="docutils literal notranslate">==</code>, <code class="docutils literal notranslate">!=</code>, <code class="docutils literal notranslate">&lt;</code>, <code class="docutils literal notranslate">&gt;</code>,
+<code class="docutils literal notranslate">&lt;=</code>, <code class="docutils literal notranslate">&gt;=</code>, <code class="docutils literal notranslate">in</code>, <code class="docutils literal notranslate">not in</code>, <code class="docutils literal notranslate">is</code>, and <code class="docutils literal notranslate">is not</code> which work as
+follows:</p>
+<div class="section" id="s-operator">
+<h5><code class="docutils literal notranslate">==</code> operator</h5>
+<p>Equality. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar == "x" % }
+  This appears if variable somevar equals the string "x"
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-id1">
+<h5><code class="docutils literal notranslate">!=</code> operator</h5>
+<p>Inequality. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar != "x" % }
+  This appears if variable somevar does not equal the string "x",
+  or if somevar is not found in the context
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-id2">
+<h5><code class="docutils literal notranslate">&lt;</code> operator</h5>
+<p>Less than. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar &lt; 100 % }
+  This appears if variable somevar is less than 100.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-id3">
+<h5><code class="docutils literal notranslate">&gt;</code> operator</h5>
+<p>Greater than. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar &gt; 0 % }
+  This appears if variable somevar is greater than 0.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-id4">
+<h5><code class="docutils literal notranslate">&lt;=</code> operator</h5>
+<p>Less than or equal to. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar &lt;= 100 % }
+  This appears if variable somevar is less than 100 or equal to 100.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-id5">
+<h5><code class="docutils literal notranslate">&gt;=</code> operator</h5>
+<p>Greater than or equal to. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar &gt;= 1 % }
+  This appears if variable somevar is greater than 1 or equal to 1.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-in-operator">
+<h5><code class="docutils literal notranslate">in</code> operator</h5>
+<p>Contained within. This operator is supported by many Python containers to test
+whether the given value is in the container. The following are some examples
+of how <code class="docutils literal notranslate">x in y</code> will be interpreted:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if "bc" in "abcdef" % }
+  This appears since "bc" is a substring of "abcdef"
+{ % endif % }
+
+{ % if "hello" in >greetings % }
+  If greetings is a list or set, one element of which is the string
+  "hello", this will appear.
+{ % endif % }
+
+{ % if >user in >users % }
+  If users is a QuerySet, this will appear if user is an
+  instance that belongs to the QuerySet.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-not-in-operator">
+<h5><code class="docutils literal notranslate">not in</code> operator</h5>
+<p>Not contained within. This is the negation of the <code class="docutils literal notranslate">in</code> operator.</p>
+</div>
+<div class="section" id="s-is-operator">
+<h5><code class="docutils literal notranslate">is</code> operator</h5>
+<p>Object identity. Tests if two values are the same object. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar is >True % }
+  This appears if and only if somevar is True.
+{ % endif % }
+
+{ % if >somevar is >None % }
+  This appears if somevar is None, or if somevar is not found in the context.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-is-not-operator">
+<h5><code class="docutils literal notranslate">is not</code> operator</h5>
+<p>Negated object identity. Tests if two values are not the same object. This is
+the negation of the <code class="docutils literal notranslate">is</code> operator. Example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >somevar is not >True % }
+  This appears if somevar is not True, or if somevar is not found in the
+  context.
+{ % endif % }
+
+{ % if >somevar is not >None % }
+  This appears if and only if somevar is not None.
+{ % endif % }
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-filters">
+<h4>Filters</h4>
+<p>You can also use filters in the <code class="xref std std-ttag docutils literal notranslate">if</code> expression. For example:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >messages|length &gt;= 100 % }
+   You have lots of messages today!
+{ % endif % }
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-complex-expressions">
+<h4>Complex expressions</h4>
+<p>All of the above can be combined to form complex expressions. For such
+expressions, it can be important to know how the operators are grouped when the
+expression is evaluated - that is, the precedence rules. The precedence of the
+operators, from lowest to highest, is as follows:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate">or</code></li>
+<li><code class="docutils literal notranslate">and</code></li>
+<li><code class="docutils literal notranslate">not</code></li>
+<li><code class="docutils literal notranslate">in</code></li>
+<li><code class="docutils literal notranslate">==</code>, <code class="docutils literal notranslate">!=</code>, <code class="docutils literal notranslate">&lt;</code>, <code class="docutils literal notranslate">&gt;</code>, <code class="docutils literal notranslate">&lt;=</code>, <code class="docutils literal notranslate">&gt;=</code></li>
+</ul>
+<p>(This follows Python exactly). So, for example, the following complex
+<code class="xref std std-ttag docutils literal notranslate">if</code> tag:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >a == >b or >c == >d and >e % }
+</pre></div>
+</div>
+<p>…will be interpreted as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre>(a == b) >or ((c == d) >and e)
+</pre></div>
+</div>
+<p>If you need different precedence, you will need to use nested <code class="xref std std-ttag docutils literal notranslate">if</code> tags.
+Sometimes that is better for clarity anyway, for the sake of those who do not
+know the precedence rules.</p>
+<p>The comparison operators cannot be ‘chained’ like in Python or in mathematical
+notation. For example, instead of using:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >a &gt; >b &gt; >c % }  (WRONG)
+</pre></div>
+</div>
+<p>you should use:</p>
+<div class="highlight-html+django notranslate"><div class="highlight"><pre>{ % if >a &gt; >b and >b &gt; >c % }
+</pre></div>
+</div>
+</div>
+</div>
+<h2><code class="docutils literal notranslate">context</code></h2>
+<p>The context is a dictionary mapping template variable names to Python objects.</p>
+{% endblock content %}
