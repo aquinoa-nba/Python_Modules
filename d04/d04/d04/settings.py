@@ -16,6 +16,28 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOGFILE = os.path.join(BASE_DIR, 'logs.log')
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'logs.log'),
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'WARNING',
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#             'propagate': False,
+#         },
+#     },
+# }
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -34,6 +56,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'ex00.apps.Ex00Config',
     'ex01.apps.Ex01Config',
+    'ex02.apps.Ex02Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

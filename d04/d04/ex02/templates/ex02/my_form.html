@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<form action="{% url 'my_form' %}" method="post" style="text-align: center; padding-top: 2em">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+    <ul type=" ">
+        {% for log in logs %}
+        <li style="margin: 10px; font-size: 110%; list-style-type: none;">{{ log }}</li>
+        {% endfor %}
+    </ul>
+
+</form>
+</body>
+</html>
