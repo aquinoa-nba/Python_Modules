@@ -54,15 +54,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'ex00.apps.Ex00Config',
-    'ex01.apps.Ex01Config',
-    'ex02.apps.Ex02Config',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ex00.apps.Ex00Config',
+    'ex01.apps.Ex01Config',
+    'ex02.apps.Ex02Config',
+    'ex03.apps.Ex03Config',
 ]
 
 MIDDLEWARE = [

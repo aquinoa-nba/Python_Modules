@@ -1,0 +1,35 @@
+{% extends 'ex03/base.html' %}
+
+{% block title %}
+<title>Ex03: Table</title>
+{% endblock title %}
+
+{% block style %}
+<style>
+    th, td {
+        height: 40px;
+        width: 80px;
+    }
+    table {
+        margin-left: 45%;
+        border-collapse: collapse;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<table>
+    <th>Noir</th>
+    <th>Rouge</th>
+    <th>Bleu</th>
+    <th>Vert</th>
+    {% for shade in shades %}
+    <tr>
+        <td style="background-color: rgb({{ shade }}, {{ shade }}, {{ shade }})"></td>
+        <td style="background-color: rgb({{ shade }}, 0, 0)"></td>
+        <td style="background-color: rgb(0, 0, {{ shade }})"></td>
+        <td style="background-color: rgb(0, {{ shade }}, 0)"></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content %}
