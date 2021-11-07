@@ -17,7 +17,7 @@ def init(request):
             # the cursor for performing database operation
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "CREATE TABLE ex02_movies ("
+                    "CREATE TABLE ex04_movies ("
                     "episode_nb int, "
                     "title varchar(64) NOT NULL, "
                     "opening_crawl text, "
@@ -93,11 +93,11 @@ def populate(request):
                 password=settings.DATABASES['default']['PASSWORD'],
                 host=settings.DATABASES['default']['HOST']
         ) as connection:
-            with connection.cursor() as cursor:
-                for movie in movies:
-                    try:
+            for movie in movies:
+                try:
+                    with connection.cursor() as cursor:
                         cursor.execute(
-                            "INSERT INTO ex02_movies (episode_nb, title, director, producer, release_date) VALUES "
+                            "INSERT INTO ex04_movies (episode_nb, title, director, producer, release_date) VALUES "
                             "("
                             f"{movie['episode_nb']}, "
                             f"'{movie['title']}', "
@@ -107,9 +107,11 @@ def populate(request):
                             ");"
                         )
                         response += "OK<br>"
-                    except Exception as ex:
-                        response += f'{ex}<br>'
-                        connection.rollback()
+                        connection.commit()
+                except Exception as ex:
+                    response += f'{ex}<br>'
+                    # WTF !!!
+                    connection.rollback()
             return HttpResponse(response)
     except Exception as ex:
         return HttpResponse(ex)
@@ -124,12 +126,52 @@ def display(request):
                 host=settings.DATABASES['default']['HOST']
         ) as connection:
             with connection.cursor() as cursor:
-                cursor.execute("SELECT * FROM ex02_movies;")
+                cursor.execute("SELECT * FROM ex04_movies;")
                 context = {
                     'movies': cursor.fetchall(),
                 }
                 if not context['movies']:
                     return HttpResponse('No data available')
-        return render(request, 'ex02/display.html', context=context)
+        return render(request, 'ex04/display.html', context=context)
     except Exception:
+        return HttpResponse('No data available')
+
+
+def remove(request):
+    try:
+        if request.method == 'POST':
+            form = request.POST
+            removing(form['title'])
+        with psycopg2.connect(
+                database=settings.DATABASES['default']['NAME'],
+                user=settings.DATABASES['default']['USER'],
+                password=settings.DATABASES['default']['PASSWORD'],
+                host=settings.DATABASES['default']['HOST']
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT title FROM ex04_movies;")
+                response = cursor.fetchall()
+                if not response:
+                    return HttpResponse('No data available')
+        context = {
+            'title_list': response,
+        }
+        return render(request, 'ex04/form.html', context=context)
+    except Exception:
+        return HttpResponse('No data available')
+
+
+def removing(rm_title):
+    try:
+        with psycopg2.connect(
+                database=settings.DATABASES['default']['NAME'],
+                user=settings.DATABASES['default']['USER'],
+                password=settings.DATABASES['default']['PASSWORD'],
+                host=settings.DATABASES['default']['HOST']
+        ) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"DELETE FROM ex04_movies WHERE title = '{rm_title}';"
+                )
+    except Exception as ex:
         return HttpResponse('No data available')

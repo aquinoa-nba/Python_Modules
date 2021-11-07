@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Removing</title>
+</head>
+<body>
+<form action="{% url 'remove' %}" method="post" style="text-align: center; padding-top: 2em">
+    {% csrf_token %}
+	<select name="title">
+	{% for elem in title_list %}
+		<option>{{ elem.0 }}</option>
+	{% endfor %}
+	</select>
+	<input type="submit" value="remove">
+</form>
+</body>
+</html>
