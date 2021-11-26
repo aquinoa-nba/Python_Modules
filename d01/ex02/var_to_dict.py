@@ -34,7 +34,7 @@ def list_to_dict(lst):
 
 def print_dict(dct):
     for key, val in dct.items():
-        print("{} : {}".format(key, val))
+        print(f'{key} : {val}')
 
 
 if __name__ == '__main__':
