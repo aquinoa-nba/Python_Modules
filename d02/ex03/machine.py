@@ -5,7 +5,8 @@ import random
 
 
 class CoffeeMachine:
-    after_repair = 0
+    def __init__(self):
+        self.after_repair = 0
 
     class EmptyCup(beverages.HotBeverage):
         def __init__(self, price=0.90, name='empy cup'):
