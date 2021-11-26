@@ -27,11 +27,11 @@ def make_dict():
 
 if __name__ == '__main__':
     dic = make_dict()
-    # for i in sorted(dic.items(), key=lambda para: (para[1], para[0])):
+    # for i in sorted(dic.items(), key=lambda x: (x[1], x[0])):
     #     print(i[0])
     lst = []
-    for i in dic.items():
-        lst.append((i[1], i[0]))
+    for name, year in dic.items():
+        lst.append((year, name))
     lst.sort()
     for i in lst:
         print(i[1])
