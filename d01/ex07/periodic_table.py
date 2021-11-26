@@ -18,39 +18,48 @@ def start_html(f_out):
         "<head>\n"
         "\t<meta charset=\"UTF-8\">\n"
         "\t<title>Periodic Table</title>\n"
+        "\t<style>\n"
+        "\t\t.element {\n"
+        "\t\t\tborder: 1px solid black;\n"
+        "\t\t\tpadding:10px;\n"
+        "\t\t}\n"
+        "\t</style>\n"
         "</head>\n"
         "<body>\n"
-        "<table style=\'empty-cells: show;\'>\n"
+        "<table>\n"
     )
 
 
 def add_elem_to_table(elem, prev_pos):
     html = str()
-    html += "\t<td style=\"border: 1px; padding:10px\"></td>\n" * (int(elem[1].get('position')) - prev_pos - 1)
+    for i in range(int(elem[1].get('position')) - prev_pos - 1):
+        if i == 0:
+            html += '\t\t'
+        html += '<td></td>'
     if elem[1].get('position') == '0':
-         html += "\t\t<tr>"
-    html += "\t\n\t\t<td style=\"border: 1px solid black; padding:10px\">\n"
-    html += "\t\t\t\t<h4>"
+        html += "\t<tr>"
+    html += "\n\t\t<td class=\"element\">\n"
+    html += "\t\t\t<h4>"
     html += str(elem[0])
     html += "</h4>\n"
-    html += "\t\t\t\t\t<ul>\n"
-    html += "\t\t\t\t\t\t<li>No "
+    html += "\t\t\t<ul>\n"
+    html += "\t\t\t\t<li>No "
     html += str(elem[1].get('number'))
     html += "</li>\n"
-    html += "\t\t\t\t\t\t<li>"
+    html += "\t\t\t\t<li>"
     html += str(elem[1].get('small'))
     html += "</li>\n"
-    html += "\t\t\t\t\t\t<li>"
+    html += "\t\t\t\t<li>"
     html += str(elem[1].get('molar'))
     html += "</li>\n"
-    html += "\t\t\t\t\t\t<li>"
+    html += "\t\t\t\t<li>"
     html += str(sum_str((elem[1].get('electron'))))
     html += " electron"
     html += "</li>\n"
-    html += "\t\t\t\t\t</ul>\n"
-    html += "\t\t\t</td>"
+    html += "\t\t\t</ul>\n"
+    html += "\t\t</td>\n"
     if elem[1].get('position') == '17':
-        html += "\n\t\t</tr>\n"
+        html += "\t</tr>\n"
     return html
 
 
