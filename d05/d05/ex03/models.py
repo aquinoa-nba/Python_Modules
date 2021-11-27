@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Movies(models.Model):
-    title = models.CharField(unique=True, max_length=64)
     episode_nb = models.IntegerField(primary_key=True)
+    title = models.CharField(unique=True, max_length=64)
     opening_crawl = models.TextField(null=True)
     director = models.CharField(max_length=32)
     producer = models.CharField(max_length=128)

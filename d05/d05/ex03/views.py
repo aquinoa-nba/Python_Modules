@@ -65,7 +65,7 @@ def populate(request):
     ]
     for movie in movies:
         try:
-            i = Movies(
+            i, check = Movies.objects.get_or_create(
                 episode_nb=movie['episode_nb'],
                 title=movie['title'],
                 opening_crawl=movie['opening_crawl'],
@@ -73,8 +73,11 @@ def populate(request):
                 producer=movie['producer'],
                 release_date=movie['release_date']
             )
-            i.save()
-            response += 'OK<br>'
+            if check:
+                response += 'OK<br>'
+                i.save()
+            else:
+                response += 'Already exist<br>'
         except Exception as ex:
             response += f"{ex}<br>"
     return HttpResponse(response)
