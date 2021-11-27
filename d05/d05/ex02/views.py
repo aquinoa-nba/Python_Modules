@@ -107,6 +107,7 @@ def populate(request):
                             ");"
                         )
                         response += "OK<br>"
+                        connection.commit()
                     except Exception as ex:
                         response += f'{ex}<br>'
                         connection.rollback()
@@ -133,3 +134,4 @@ def display(request):
         return render(request, 'ex02/display.html', context=context)
     except Exception:
         return HttpResponse('No data available')
+
